@@ -20,7 +20,7 @@ attribution retained in this ledger and in the relevant Git commits.
 | --- | --- | --- | --- | --- |
 | Movie budget and revenue | [`373d34b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/373d34b339b9877a6de5a5b7f57fe95a2185e1b9) | Common currency formatter, `MetaDetails`, TMDB enrichment, and additional-info rows | Formatter, TMDB mapping/settings, and desktop Compose UI | macOS arm64/x86_64 and Windows x64 CI pass |
 | Hardware keyboard shortcuts | Existing desktop implementation; no mobile code copied | `PlayerControlsAction`, `player-ui/controls.js`, and `NativePlayerController.kt` already cover desktop keyboard input | `DesktopPlayerKeyboardShortcutsTest` protects Space, arrows, Escape, modal, and text-entry behavior | Characterized; no port required |
-| Stream-list search and filtering | [`8cfcba5`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/8cfcba5e5311020ec08f2fbe943bc5af5bc6209c) | Optional desktop search setting, profile-scoped persistence, wide/compact UI, and provider-aware multi-term filtering | `StreamSearchTest` covers disabled/blank input, metadata matching, and selected-provider empty results | Implementation complete; platform CI pending |
+| Stream-list search and filtering | [`8cfcba5`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/8cfcba5e5311020ec08f2fbe943bc5af5bc6209c) | Optional desktop search setting, profile-scoped persistence, wide/compact UI, and provider-aware multi-term filtering | `StreamSearchTest` covers disabled/blank input, metadata matching, and selected-provider empty results | macOS arm64/x86_64 and Windows x64 CI pass |
 
 ## Planned inventory
 
@@ -59,6 +59,8 @@ The `Desktop Enhanced CI` workflow is the source of truth for macOS and Windows 
 Individual feature rows must not claim a platform passes until the corresponding CI job succeeds.
 
 Initial verification passed in [Desktop Enhanced CI run 36415752928](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36415752928): desktop compilation and Enhanced tests, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
+
+Stream-list search verification passed in [Desktop Enhanced CI run 36443754516](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36443754516): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 The CI test job compiles the complete desktop source and runs Enhanced-specific regression tests.
 The unfiltered upstream desktop suite is not used as a required check because 27 unrelated tests
