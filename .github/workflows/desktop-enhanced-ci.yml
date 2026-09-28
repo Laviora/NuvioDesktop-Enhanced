@@ -1,0 +1,198 @@
+name: Desktop Enhanced CI
+
+on:
+  push:
+    branches: [enhanced]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-enhanced-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  desktop-tests:
+    name: Desktop tests (macOS)
+    runs-on: macos-15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Create local build configuration
+        run: touch local.properties
+
+      - name: Compile and test desktop code
+        run: ./gradlew :composeApp:compileKotlinDesktop :composeApp:desktopTest --stacktrace
+
+  macos-package:
+    name: macOS ${{ matrix.arch }} package
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+          - runner: macos-15-intel
+            arch: x86_64
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Fetch macOS runtime
+        env:
+          MACOS_ARCH: ${{ matrix.arch }}
+        run: git lfs pull --include="composeApp/src/desktopMain/native/macos/runtime/${MACOS_ARCH}/**" --exclude=""
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Create local build configuration
+        run: touch local.properties
+
+      - name: Build unsigned DMG
+        env:
+          MACOS_ARCH: ${{ matrix.arch }}
+          NUVIO_MACOS_NOTARY_KEYCHAIN_PROFILE: ""
+          NUVIO_MACOS_SIGNING_IDENTITY: ""
+        run: |
+          ./gradlew \
+            :composeApp:packageReleaseDmg \
+            "-Pnuvio.macos.arch=${MACOS_ARCH}" \
+            -Pcompose.desktop.packaging.checkJdkVendor=false \
+            --no-configuration-cache \
+            --no-daemon \
+            --stacktrace
+
+      - name: Verify DMG
+        env:
+          MACOS_ARCH: ${{ matrix.arch }}
+        run: |
+          shopt -s nullglob
+          dmg_files=(composeApp/build/compose/release-dmgs/*.dmg)
+          if [[ ${#dmg_files[@]} -ne 1 ]]; then
+            printf 'Expected exactly one DMG, found %s\n' "${#dmg_files[@]}" >&2
+            exit 1
+          fi
+          if [[ "${dmg_files[0]}" != *"${MACOS_ARCH}"* ]]; then
+            echo "DMG does not match requested architecture: ${dmg_files[0]}" >&2
+            exit 1
+          fi
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuvio-desktop-enhanced-macos-${{ matrix.arch }}
+          path: composeApp/build/compose/release-dmgs/*.dmg
+          if-no-files-found: error
+          retention-days: 7
+
+  windows-package:
+    name: Windows x64 package
+    runs-on: windows-2022
+    env:
+      WEBVIEW2_VERSION: 1.0.4078.44
+      TORRSERVER_WINDOWS_SHA256: 13031185a54abe0f729f9f3bdb7271a349a89ac8c559327d773c66007ed604f4
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Fetch Windows runtime
+        shell: bash
+        run: |
+          git lfs pull --include="composeApp/src/desktopMain/native/windows/runtime/**,composeApp/src/desktopMain/resources/torrserver/windows-amd64/TorrServer.exe" --exclude=""
+          runtime_path="composeApp/src/desktopMain/native/windows/runtime/libmpv-2.dll"
+          torrserver_path="composeApp/src/desktopMain/resources/torrserver/windows-amd64/TorrServer.exe"
+          [[ -f "${runtime_path}" ]] || { echo "Windows libmpv runtime is missing." >&2; exit 1; }
+          (( $(wc -c < "${runtime_path}") >= 1000000 )) || { echo "Windows libmpv LFS object was not materialized." >&2; exit 1; }
+          [[ -f "${torrserver_path}" ]] || { echo "Windows TorrServer executable is missing." >&2; exit 1; }
+          [[ "$(sha256sum "${torrserver_path}" | awk '{print $1}')" == "${TORRSERVER_WINDOWS_SHA256}" ]] || { echo "Windows TorrServer checksum mismatch." >&2; exit 1; }
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Create local build configuration
+        shell: bash
+        run: touch local.properties
+
+      - name: Install WebView2 SDK
+        shell: pwsh
+        run: |
+          nuget install Microsoft.Web.WebView2 `
+            -Version $env:WEBVIEW2_VERSION `
+            -OutputDirectory "$env:RUNNER_TEMP\nuget" `
+            -DirectDownload `
+            -NonInteractive `
+            -NoCache
+          $root = Join-Path $env:RUNNER_TEMP "nuget\Microsoft.Web.WebView2.$env:WEBVIEW2_VERSION"
+          $loader = Join-Path $root "build\native\x64\WebView2Loader.dll.lib"
+          if (-not (Test-Path $loader)) { throw "WebView2 loader library is missing: $loader" }
+          "WEBVIEW2_ROOT=$root" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Build MSI
+        shell: pwsh
+        run: |
+          & .\gradlew.bat `
+            :composeApp:packageReleaseMsi `
+            "-Pnuvio.webview2.dir=$env:WEBVIEW2_ROOT" `
+            "-Pcompose.desktop.packaging.checkJdkVendor=false" `
+            --no-configuration-cache `
+            --no-daemon `
+            --stacktrace
+
+      - name: Verify MSI contents
+        shell: pwsh
+        run: |
+          $msiFiles = @(Get-ChildItem "composeApp\build\compose\release-msis" -Filter "*.msi" -File)
+          if ($msiFiles.Count -ne 1) { throw "Expected exactly one MSI, found $($msiFiles.Count)." }
+          $extractDir = Join-Path $env:RUNNER_TEMP "nuvio-msi-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Path $extractDir | Out-Null
+          $process = Start-Process msiexec.exe -ArgumentList @("/a", "`"$($msiFiles[0].FullName)`"", "/qn", "TARGETDIR=`"$extractDir`"") -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "MSI extraction failed with exit code $($process.ExitCode)." }
+          $appJar = Get-ChildItem $extractDir -Recurse -Filter "composeApp-desktop-*.jar" | Select-Object -First 1
+          if ($null -eq $appJar) { throw "The MSI does not contain the desktop application JAR." }
+          $jarEntries = & jar tf $appJar.FullName
+          $requiredEntries = @(
+            "native/windows/player_bridge.dll",
+            "native/windows/libmpv-2.dll",
+            "native/windows/WebView2Loader.dll",
+            "native/windows/vcruntime140.dll",
+            "native/windows/msvcp140.dll",
+            "native/windows/runtime-files.txt",
+            "torrserver/windows-amd64/TorrServer.exe"
+          )
+          foreach ($entry in $requiredEntries) {
+            if ($jarEntries -notcontains $entry) { throw "The MSI application is missing $entry" }
+          }
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuvio-desktop-enhanced-windows-x64
+          path: composeApp/build/compose/release-msis/*.msi
+          if-no-files-found: error
+          retention-days: 7
