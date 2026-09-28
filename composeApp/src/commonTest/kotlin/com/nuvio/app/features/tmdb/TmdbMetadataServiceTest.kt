@@ -12,6 +12,13 @@ import kotlin.test.assertTrue
 
 class TmdbMetadataServiceTest {
     @Test
+    fun `recommendations report more pages only before the API total`() {
+        assertTrue(recommendationsHaveMorePages(requestedPage = 2, totalPages = 4))
+        assertFalse(recommendationsHaveMorePages(requestedPage = 4, totalPages = 4))
+        assertFalse(recommendationsHaveMorePages(requestedPage = 1, totalPages = null))
+    }
+
+    @Test
     fun `buildStandaloneMeta maps tmdb enrichment without addon meta`() {
         val enrichment = TmdbEnrichment(
             localizedTitle = "TMDB Movie",

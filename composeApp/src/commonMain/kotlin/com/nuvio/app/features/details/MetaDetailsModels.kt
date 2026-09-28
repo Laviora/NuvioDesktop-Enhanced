@@ -37,6 +37,7 @@ data class MetaDetails(
     val defaultVideoId: String? = null,
     val moreLikeThis: List<MetaPreview> = emptyList(),
     val moreLikeThisSource: MoreLikeThisSource? = null,
+    val moreLikeThisHasMore: Boolean = false,
     val collectionName: String? = null,
     val collectionItems: List<MetaPreview> = emptyList(),
     val trailers: List<MetaTrailer> = emptyList(),
@@ -50,6 +51,11 @@ enum class MoreLikeThisSource {
     TRAKT,
     SIMKL,
 }
+
+data class MoreLikeThisPage(
+    val items: List<MetaPreview> = emptyList(),
+    val hasMore: Boolean = false,
+)
 
 data class MetaExternalRating(
     val source: String,
