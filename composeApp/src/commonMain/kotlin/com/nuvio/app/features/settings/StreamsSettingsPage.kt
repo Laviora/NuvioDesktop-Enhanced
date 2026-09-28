@@ -58,6 +58,7 @@ import com.nuvio.app.features.streams.StreamBadgePlacement
 import com.nuvio.app.features.streams.StreamBadgeRules
 import com.nuvio.app.features.streams.StreamBadgeSettingsRepository
 import com.nuvio.app.features.streams.StreamBackgroundMode
+import com.nuvio.app.isDesktop
 import kotlinx.coroutines.launch
 import nuvio.composeapp.generated.resources.Res
 import nuvio.composeapp.generated.resources.action_cancel
@@ -91,6 +92,8 @@ import nuvio.composeapp.generated.resources.settings_stream_size_badges_title
 import nuvio.composeapp.generated.resources.settings_stream_addon_logo_title
 import nuvio.composeapp.generated.resources.settings_stream_addon_logo_description
 import nuvio.composeapp.generated.resources.settings_stream_display_section
+import nuvio.composeapp.generated.resources.settings_stream_search_description
+import nuvio.composeapp.generated.resources.settings_stream_search_title
 import nuvio.composeapp.generated.resources.settings_stream_background_title
 import nuvio.composeapp.generated.resources.settings_stream_background_description
 import nuvio.composeapp.generated.resources.settings_meta_background_mode_cinematic
@@ -162,6 +165,15 @@ internal fun LazyListScope.streamsSettingsContent(isTablet: Boolean) {
                     isTablet = isTablet,
                     onCheckedChange = StreamBadgeSettingsRepository::setShowAddonLogo,
                 )
+                if (isDesktop) {
+                    SettingsSwitchRow(
+                        title = stringResource(Res.string.settings_stream_search_title),
+                        description = stringResource(Res.string.settings_stream_search_description),
+                        checked = currentSettings.showStreamSearch,
+                        isTablet = isTablet,
+                        onCheckedChange = StreamBadgeSettingsRepository::setShowStreamSearch,
+                    )
+                }
             }
         }
 

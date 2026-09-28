@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -180,6 +181,7 @@ fun StreamsScreen(
     val streamLinkCopiedText = stringResource(Res.string.streams_link_copied)
     val noDirectStreamLinkText = stringResource(Res.string.streams_no_direct_link)
     var streamActionsTarget by remember(videoId) { mutableStateOf<StreamActionsTarget?>(null) }
+    var streamSearchQuery by rememberSaveable(videoId) { mutableStateOf("") }
     val downloadScope = rememberCoroutineScope()
     var preferredFilterApplied by remember(videoId) { mutableStateOf(false) }
     val episodeProgress = watchProgressUiState.progressForVideo(
@@ -260,6 +262,9 @@ fun StreamsScreen(
         if (isTabletLayout) {
             TabletStreamsLayout(
                 isEpisode = isEpisode,
+                showSearchField = isDesktop && streamDisplaySettings.showStreamSearch,
+                searchQuery = streamSearchQuery,
+                onSearchQueryChange = { streamSearchQuery = it },
                 title = title,
                 logo = logo,
                 poster = poster,
@@ -288,6 +293,9 @@ fun StreamsScreen(
         } else {
             MobileStreamsLayout(
                 isEpisode = isEpisode,
+                showSearchField = isDesktop && streamDisplaySettings.showStreamSearch,
+                searchQuery = streamSearchQuery,
+                onSearchQueryChange = { streamSearchQuery = it },
                 backgroundMode = streamDisplaySettings.backgroundMode,
                 title = title,
                 logo = logo,
@@ -451,6 +459,9 @@ fun StreamsScreen(
 @Composable
 private fun MobileStreamsLayout(
     isEpisode: Boolean,
+    showSearchField: Boolean,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
     backgroundMode: StreamBackgroundMode,
     title: String,
     logo: String?,
@@ -544,8 +555,24 @@ private fun MobileStreamsLayout(
                         onRefresh = onRefresh,
                     )
 
+                    if (showSearchField) {
+                        StreamSearchField(
+                            query = searchQuery,
+                            onQueryChange = onSearchQueryChange,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                        )
+                    }
+
+                    val searchResult = remember(uiState, searchQuery, showSearchField) {
+                        filterStreamsForSearch(uiState, searchQuery, showSearchField)
+                    }
+                    if (searchResult.isEmptyBecauseOfSearch) {
+                        StreamSearchEmptyBlock(modifier = Modifier.weight(1f))
+                        return@Column
+                    }
+
                     StreamList(
-                        uiState = uiState,
+                        uiState = searchResult.uiState,
                         debridEnabled = debridEnabled,
                         appendInstantServiceToDefaultName = appendInstantServiceToDefaultName,
                         onStreamSelected = onStreamSelected,

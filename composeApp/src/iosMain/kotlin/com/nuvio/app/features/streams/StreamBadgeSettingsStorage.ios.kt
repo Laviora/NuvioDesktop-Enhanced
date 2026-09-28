@@ -37,6 +37,10 @@ actual object StreamBadgeSettingsStorage {
         saveBoolean(showAddonLogoKey, enabled)
     }
 
+    actual fun loadShowStreamSearch(): Boolean? = null
+
+    actual fun saveShowStreamSearch(enabled: Boolean) = Unit
+
     actual fun loadStreamBadgePlacement(): String? = loadString(streamBadgePlacementKey)
 
     actual fun loadStreamBackgroundMode(): String? = loadString(streamBackgroundModeKey)
