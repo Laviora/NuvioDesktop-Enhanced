@@ -41,8 +41,11 @@ jobs:
             --tests 'com.nuvio.app.core.format.CurrencyDisplayTest' \
             --tests 'com.nuvio.app.features.tmdb.TmdbMetadataServiceTest' \
             --tests 'com.nuvio.app.features.details.components.DetailAdditionalInfoSectionTest' \
+            --tests 'com.nuvio.app.features.details.components.DetailPosterRailSectionTest' \
+            --tests 'com.nuvio.app.features.catalog.MoreLikeThisCatalogTest' \
             --tests 'com.nuvio.app.features.player.DesktopPlayerKeyboardShortcutsTest' \
             --tests 'com.nuvio.app.features.streams.StreamSearchTest' \
+            --tests 'com.nuvio.app.features.trakt.TraktRelatedPaginationTest' \
             --stacktrace
 
   macos-package:
