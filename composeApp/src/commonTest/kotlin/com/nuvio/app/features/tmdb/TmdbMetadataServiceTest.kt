@@ -53,6 +53,46 @@ class TmdbMetadataServiceTest {
     }
 
     @Test
+    fun `buildStandaloneMeta maps budget and revenue`() {
+        val result = TmdbMetadataService.buildStandaloneMeta(
+            type = "movie",
+            id = "tmdb:1",
+            tmdbId = 1,
+            enrichment = moneyEnrichment(budget = 5_000_000L, revenue = 12_500_000L),
+        )
+
+        assertEquals(5_000_000L, result.budget)
+        assertEquals(12_500_000L, result.revenue)
+    }
+
+    @Test
+    fun `applyEnrichment preserves addon money when details enrichment is disabled`() {
+        val base = MetaDetails(
+            id = "tt1",
+            type = "movie",
+            name = "Movie",
+            budget = 100L,
+            revenue = 200L,
+        )
+
+        val result = TmdbMetadataService.applyEnrichment(
+            meta = base,
+            enrichment = moneyEnrichment(budget = 300L, revenue = 400L),
+            episodeMap = emptyMap(),
+            settings = TmdbSettings(enabled = true, useDetails = false),
+        )
+
+        assertEquals(100L, result.budget)
+        assertEquals(200L, result.revenue)
+    }
+
+    @Test
+    fun `money-only enrichment has content`() {
+        assertTrue(moneyEnrichment(budget = 1L, revenue = null).hasContent())
+        assertTrue(moneyEnrichment(budget = null, revenue = 1L).hasContent())
+    }
+
+    @Test
     fun `applyEnrichment replaces enabled metadata groups`() {
         val base = MetaDetails(
             id = "tt1234567",
@@ -422,4 +462,30 @@ class TmdbMetadataServiceTest {
         assertEquals("Chibi Maruko-chan", titles[57775])
         assertEquals("One Piece", titles[37854])
     }
+
+    private fun moneyEnrichment(
+        budget: Long?,
+        revenue: Long?,
+    ) = TmdbEnrichment(
+        localizedTitle = null,
+        description = null,
+        genres = emptyList(),
+        backdrop = null,
+        logo = null,
+        poster = null,
+        people = emptyList(),
+        director = emptyList(),
+        writer = emptyList(),
+        releaseInfo = null,
+        rating = null,
+        runtimeMinutes = null,
+        ageRating = null,
+        status = null,
+        countries = emptyList(),
+        language = null,
+        budget = budget,
+        revenue = revenue,
+        productionCompanies = emptyList(),
+        networks = emptyList(),
+    )
 }
