@@ -21,6 +21,7 @@ attribution retained in this ledger and in the relevant Git commits.
 | Movie budget and revenue | [`373d34b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/373d34b339b9877a6de5a5b7f57fe95a2185e1b9) | Common currency formatter, `MetaDetails`, TMDB enrichment, and additional-info rows | Formatter, TMDB mapping/settings, and desktop Compose UI | macOS arm64/x86_64 and Windows x64 CI pass |
 | Hardware keyboard shortcuts | Existing desktop implementation; no mobile code copied | `PlayerControlsAction`, `player-ui/controls.js`, and `NativePlayerController.kt` already cover desktop keyboard input | `DesktopPlayerKeyboardShortcutsTest` protects Space, arrows, Escape, modal, and text-entry behavior | Characterized; no port required |
 | Stream-list search and filtering | [`8cfcba5`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/8cfcba5e5311020ec08f2fbe943bc5af5bc6209c) | Optional desktop search setting, profile-scoped persistence, wide/compact UI, and provider-aware multi-term filtering | `StreamSearchTest` covers disabled/blank input, metadata matching, and selected-provider empty results | macOS arm64/x86_64 and Windows x64 CI pass |
+| More Like This: View All | [`913fe7b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/913fe7b50baa1ac2aa273c647d9e5b9a8f36b9dc) | Existing desktop catalog grid with TMDB/Trakt pagination and source-aware navigation; non-paginated SIMKL recommendations remain rail-only | Catalog page/visibility policy, TMDB and Trakt pagination, and desktop Compose action tests | macOS arm64/x86_64 and Windows x64 CI pass |
 
 ## Planned inventory
 
@@ -28,7 +29,6 @@ attribution retained in this ledger and in the relevant Git commits.
 
 - Hero card styles, dynamic backgrounds, accent treatments, and trailer preferences
 - Custom profile backgrounds
-- More Like This: View All
 - Episode ratings and details icon action row
 - Random episode selection
 - Pinned stream sources
@@ -61,6 +61,8 @@ Individual feature rows must not claim a platform passes until the corresponding
 Initial verification passed in [Desktop Enhanced CI run 36415752928](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36415752928): desktop compilation and Enhanced tests, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 Stream-list search verification passed in [Desktop Enhanced CI run 36443754516](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36443754516): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
+
+More Like This: View All verification passed in [Desktop Enhanced CI run 36450106960](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36450106960): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 The CI test job compiles the complete desktop source and runs Enhanced-specific regression tests.
 The unfiltered upstream desktop suite is not used as a required check because 27 unrelated tests
