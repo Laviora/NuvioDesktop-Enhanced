@@ -40,6 +40,18 @@ class MoreLikeThisCatalogTest {
         assertFalse(meta(MoreLikeThisSource.TMDB, hasMore = false).canOpenMoreLikeThisCatalog())
     }
 
+    @Test
+    fun `more like this target keeps content type and supports pagination`() {
+        val target = CatalogTarget.MoreLikeThis(
+            itemId = "tt0111161",
+            itemType = "movie",
+            source = MoreLikeThisSource.TMDB,
+        )
+
+        assertEquals("movie", target.contentType)
+        assertTrue(target.supportsPagination)
+    }
+
     private fun meta(source: MoreLikeThisSource, hasMore: Boolean): MetaDetails =
         MetaDetails(
             id = "tt0111161",

@@ -148,6 +148,11 @@ object CatalogRepository {
                         page = requestedSkip.takeIf { it > 0 } ?: 1,
                     )
 
+                    is CatalogTarget.MoreLikeThis -> fetchMoreLikeThisCatalogPage(
+                        target = target,
+                        page = requestedSkip.takeIf { it > 0 } ?: 1,
+                    )
+
                     is CatalogTarget.Library -> error(getString(Res.string.catalog_load_failed))
                 }.withUnreleasedFilter(request.hideUnreleasedContent)
             }.fold(
