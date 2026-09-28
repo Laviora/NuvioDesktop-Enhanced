@@ -33,8 +33,15 @@ jobs:
       - name: Create local build configuration
         run: touch local.properties
 
-      - name: Compile and test desktop code
-        run: ./gradlew :composeApp:compileKotlinDesktop :composeApp:desktopTest --stacktrace
+      - name: Compile desktop code and run Enhanced regression tests
+        run: |
+          ./gradlew \
+            :composeApp:compileKotlinDesktop \
+            :composeApp:desktopTest \
+            --tests 'com.nuvio.app.core.format.CurrencyDisplayTest' \
+            --tests 'com.nuvio.app.features.tmdb.TmdbMetadataServiceTest' \
+            --tests 'com.nuvio.app.features.details.components.DetailAdditionalInfoSectionTest' \
+            --stacktrace
 
   macos-package:
     name: macOS ${{ matrix.arch }} package

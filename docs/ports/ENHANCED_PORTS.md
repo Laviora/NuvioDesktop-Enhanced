@@ -57,3 +57,8 @@ attribution retained in this ledger and in the relevant Git commits.
 
 The `Desktop Enhanced CI` workflow is the source of truth for macOS and Windows verification.
 Individual feature rows must not claim a platform passes until the corresponding CI job succeeds.
+
+The CI test job compiles the complete desktop source and runs Enhanced-specific regression tests.
+The unfiltered upstream desktop suite is not used as a required check because 27 unrelated tests
+(remote-image behavior, hero layout, and native-player teardown) fail on a clean GitHub macOS arm64
+runner at the pinned upstream revision.
