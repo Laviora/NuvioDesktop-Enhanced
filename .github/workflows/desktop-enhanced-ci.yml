@@ -42,6 +42,7 @@ jobs:
             --tests 'com.nuvio.app.features.tmdb.TmdbMetadataServiceTest' \
             --tests 'com.nuvio.app.features.details.components.DetailAdditionalInfoSectionTest' \
             --tests 'com.nuvio.app.features.player.DesktopPlayerKeyboardShortcutsTest' \
+            --tests 'com.nuvio.app.features.streams.StreamSearchTest' \
             --stacktrace
 
   macos-package:

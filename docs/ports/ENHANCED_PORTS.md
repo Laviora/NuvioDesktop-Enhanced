@@ -20,12 +20,12 @@ attribution retained in this ledger and in the relevant Git commits.
 | --- | --- | --- | --- | --- |
 | Movie budget and revenue | [`373d34b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/373d34b339b9877a6de5a5b7f57fe95a2185e1b9) | Common currency formatter, `MetaDetails`, TMDB enrichment, and additional-info rows | Formatter, TMDB mapping/settings, and desktop Compose UI | macOS arm64/x86_64 and Windows x64 CI pass |
 | Hardware keyboard shortcuts | Existing desktop implementation; no mobile code copied | `PlayerControlsAction`, `player-ui/controls.js`, and `NativePlayerController.kt` already cover desktop keyboard input | `DesktopPlayerKeyboardShortcutsTest` protects Space, arrows, Escape, modal, and text-entry behavior | Characterized; no port required |
+| Stream-list search and filtering | [`8cfcba5`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/8cfcba5e5311020ec08f2fbe943bc5af5bc6209c) | Optional desktop search setting, profile-scoped persistence, wide/compact UI, and provider-aware multi-term filtering | `StreamSearchTest` covers disabled/blank input, metadata matching, and selected-provider empty results | Implementation complete; platform CI pending |
 
 ## Planned inventory
 
 ### Phase 2 — shared or low-risk desktop adaptations
 
-- Stream-list search and filtering
 - Hero card styles, dynamic backgrounds, accent treatments, and trailer preferences
 - Custom profile backgrounds
 - More Like This: View All
