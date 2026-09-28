@@ -112,7 +112,7 @@ understood.
 | Enhanced capability | Desktop mapping | Disposition |
 |---|---|---|
 | Budget and revenue | `commonMain` currency formatter, TMDB detail model/service, details information UI | **Phase 1: first port**; platform-independent and small |
-| Hardware keyboard shortcuts | Shared player shortcut model and player runtime; desktop key handling/controller | **Phase 1: second port**; omit all iOS bridge code |
+| Hardware keyboard shortcuts | Existing desktop WebView controls, native player controller, and shared action dispatch | **Already present**; verify and retain the richer desktop implementation instead of porting mobile code |
 | Stream-list search | Shared stream filtering/UI/settings plus desktop settings persistence | Phase 2; extract pure filtering for tests |
 | Hero card style | Shared home settings and hero/skeleton composables | Phase 2; adapt to desktop window sizes |
 | Dynamic hero background | Shared palette/background UI and desktop image pipeline | Phase 2; verify rendering cost and fallback behavior |
@@ -163,23 +163,25 @@ Tests cover missing and non-positive amounts, grouping boundaries, large
 amounts, TMDB propagation, and the absence of display rows when values are
 unknown.
 
-## Second Port: Desktop Keyboard Shortcuts
+## Existing Desktop Keyboard Shortcuts
 
-The second port adds the Enhanced shortcuts that naturally fit desktop:
+Discovery during implementation planning found that Nuvio Desktop already
+implements the Enhanced shortcuts that naturally fit desktop:
 
 - `Space`: toggle play/pause.
 - `Left Arrow`: seek backward ten seconds.
 - `Right Arrow`: seek forward ten seconds.
 - `Escape`: leave the player.
 
-The handler is inactive while a modal, text field, source/episode panel, or
-locked-controls state owns keyboard input. Repeated key-down events must not
-double-trigger actions. The implementation uses Compose desktop key events and
-the existing desktop player controller; no iOS `UIPress` or Swift bridge code
-is copied.
+The existing desktop implementation also supports J/K/L, fine seeking, volume,
+fullscreen, action shortcuts, focus restoration after window reactivation, and
+modal-aware input handling. It runs through the desktop WebView controls,
+native player controller, and shared `PlayerControlsAction` dispatch.
 
-Tests cover key mapping, disabled states, focus ownership, seek bounds, and one
-action per accepted event.
+Do not copy Luqman's Compose/iOS shortcut bridge. Preserve the desktop behavior
+and verify that Space, Left Arrow, Right Arrow, and Escape remain present while
+porting other player features. Any future shortcut change must extend the
+desktop-native path and its tests rather than create a parallel handler.
 
 ## Build and CI Design
 
@@ -243,8 +245,9 @@ The initial project setup is complete when:
 - GPL licensing, upstream attribution, Luqman attribution, and the porting
   ledger are present.
 - Linux, Android, and iOS implementation work has not been introduced.
-- Budget/revenue and desktop keyboard shortcuts are committed separately with
-  tests and source attribution.
+- Budget/revenue is committed with tests and source attribution; existing
+  desktop keyboard shortcuts are documented as already implemented rather than
+  duplicated.
 - Fresh verification results identify the exact macOS and Windows checks that
   passed, failed, or could not run.
 - The final handoff lists completed ports and the ordered remaining inventory.
