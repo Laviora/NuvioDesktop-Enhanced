@@ -19,7 +19,7 @@ attribution retained in this ledger and in the relevant Git commits.
 | Feature | Source | Desktop adaptation | Tests | Status |
 | --- | --- | --- | --- | --- |
 | Movie budget and revenue | [`373d34b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/373d34b339b9877a6de5a5b7f57fe95a2185e1b9) | Common currency formatter, `MetaDetails`, TMDB enrichment, and additional-info rows | Formatter, TMDB mapping/settings, and desktop Compose UI | macOS arm64/x86_64 and Windows x64 CI pass |
-| Hardware keyboard shortcuts | Existing desktop implementation; no mobile code copied | `PlayerControlsAction`, `player-ui/controls.js`, and `NativePlayerController.kt` already cover desktop keyboard input | Existing desktop behavior retained | No port required |
+| Hardware keyboard shortcuts | Existing desktop implementation; no mobile code copied | `PlayerControlsAction`, `player-ui/controls.js`, and `NativePlayerController.kt` already cover desktop keyboard input | `DesktopPlayerKeyboardShortcutsTest` protects Space, arrows, Escape, modal, and text-entry behavior | Characterized; no port required |
 
 ## Planned inventory
 
