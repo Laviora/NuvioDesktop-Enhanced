@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="composeApp/src/commonMain/composeResources/drawable/app_logo_wordmark.png" alt="Nuvio" width="300" />
+  <img src="composeApp/src/commonMain/composeResources/drawable/app_logo_wordmark.png" alt="Nuvio Desktop Enhanced" width="300" />
   <br />
   <br />
 
@@ -11,16 +11,27 @@
   [![License][license-shield]][license-url]
 
   <p>
-    A desktop media app for Windows, macOS, and Linux.
+    Nuvio Desktop Enhanced for Windows and macOS.
     <br />
     Browse, organize, and play media from sources you add.
   </p>
 
 </div>
 
-## ⚠️ Alpha Software - Slow Development - Testers Only
+# Nuvio Desktop Enhanced
 
-Nuvio Desktop is currently in alpha and is intended only for testers. It is under development and is not suitable for daily use.
+> **Unofficial community fork.** This project uses
+> [NuvioMedia/NuvioDesktop](https://github.com/NuvioMedia/NuvioDesktop) as its implementation base
+> and ports selected enhancements from
+> [luqmanfadlli/NuvioMobile-Enhanced](https://github.com/luqmanfadlli/NuvioMobile-Enhanced).
+> It is not affiliated with or endorsed by either upstream maintainer.
+
+Enhanced builds are maintained for **macOS and Windows only**. Shared code may remain compatible
+with other targets, but Linux, Android, and iOS implementation work is outside this fork's scope.
+
+## ⚠️ Alpha Software - Testers Only
+
+Nuvio Desktop Enhanced is currently in alpha and is intended only for testers. It is under development and is not suitable for daily use.
 
 Expect breaking changes with every update. Features, settings, stored data, and compatibility may change or stop working without notice. Do not rely on this build as your primary media app, and report any issues you encounter during testing.
 
@@ -30,19 +41,18 @@ Nuvio Desktop is a media client for browsing metadata, managing collections and 
 
 ## Installation
 
-Download the latest desktop build from [GitHub Releases](https://github.com/NuvioMedia/NuvioDesktop/releases/latest).
+Enhanced releases will be published on this fork's [GitHub Releases](https://github.com/Laviora/NuvioDesktop-Enhanced/releases) page. Until the first release is available, build from source using the instructions below.
 
 Release packages are provided for supported desktop platforms:
 
 - Windows: MSI installer
 - macOS: DMG installer
-- Linux: DEB, RPM, FLATPAK and AppImage available.
 
 ## Development
 
 ```bash
-git clone https://github.com/NuvioMedia/NuvioDesktop.git
-cd NuvioDesktop
+git clone https://github.com/Laviora/NuvioDesktop-Enhanced.git
+cd NuvioDesktop-Enhanced
 ```
 
 Run from source:
@@ -72,9 +82,13 @@ Platform-specific packaging:
 # macOS
 ./scripts/build-macos-release-dmgs.sh --package-only
 
-# Linux
-./gradlew :composeApp:packageReleaseDeb
 ```
+
+## Attribution and license
+
+This repository preserves the upstream GNU GPL v3 license and existing notices. Adapted Enhanced
+features are recorded in [the porting ledger](docs/ports/ENHANCED_PORTS.md), including their source
+commit and verification status.
 
 ## Project Structure
 
@@ -126,13 +140,13 @@ For comprehensive legal information, including our full disclaimer, third-party 
 </a>
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/NuvioMedia/NuvioDesktop.svg?style=for-the-badge
-[contributors-url]: https://github.com/NuvioMedia/NuvioDesktop/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/NuvioMedia/NuvioDesktop.svg?style=for-the-badge
-[forks-url]: https://github.com/NuvioMedia/NuvioDesktop/network/members
-[stars-shield]: https://img.shields.io/github/stars/NuvioMedia/NuvioDesktop.svg?style=for-the-badge
-[stars-url]: https://github.com/NuvioMedia/NuvioDesktop/stargazers
-[issues-shield]: https://img.shields.io/github/issues/NuvioMedia/NuvioDesktop.svg?style=for-the-badge
-[issues-url]: https://github.com/NuvioMedia/NuvioDesktop/issues
-[license-shield]: https://img.shields.io/github/license/NuvioMedia/NuvioDesktop.svg?style=for-the-badge
-[license-url]: https://github.com/NuvioMedia/NuvioDesktop/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/Laviora/NuvioDesktop-Enhanced.svg?style=for-the-badge
+[contributors-url]: https://github.com/Laviora/NuvioDesktop-Enhanced/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Laviora/NuvioDesktop-Enhanced.svg?style=for-the-badge
+[forks-url]: https://github.com/Laviora/NuvioDesktop-Enhanced/network/members
+[stars-shield]: https://img.shields.io/github/stars/Laviora/NuvioDesktop-Enhanced.svg?style=for-the-badge
+[stars-url]: https://github.com/Laviora/NuvioDesktop-Enhanced/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Laviora/NuvioDesktop-Enhanced.svg?style=for-the-badge
+[issues-url]: https://github.com/Laviora/NuvioDesktop-Enhanced/issues
+[license-shield]: https://img.shields.io/github/license/Laviora/NuvioDesktop-Enhanced.svg?style=for-the-badge
+[license-url]: https://github.com/Laviora/NuvioDesktop-Enhanced/blob/enhanced/LICENSE
