@@ -50,6 +50,7 @@ jobs:
             --tests 'com.nuvio.app.features.details.components.DetailPosterRailSectionTest' \
             --tests 'com.nuvio.app.features.catalog.MoreLikeThisCatalogTest' \
             --tests 'com.nuvio.app.features.player.DesktopPlayerKeyboardShortcutsTest' \
+            --tests 'com.nuvio.app.features.streams.PinnedStreamSourcesTest' \
             --tests 'com.nuvio.app.features.streams.StreamSearchTest' \
             --tests 'com.nuvio.app.features.trakt.TraktRelatedPaginationTest' \
             --stacktrace
