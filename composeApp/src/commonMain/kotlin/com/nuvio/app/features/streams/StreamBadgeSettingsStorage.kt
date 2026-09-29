@@ -11,6 +11,8 @@ internal expect object StreamBadgeSettingsStorage {
     fun saveShowAddonLogo(enabled: Boolean)
     fun loadShowStreamSearch(): Boolean?
     fun saveShowStreamSearch(enabled: Boolean)
+    fun loadPinnedStreamSources(): String?
+    fun savePinnedStreamSources(sourceIds: String)
     fun loadStreamBackgroundMode(): String?
     fun saveStreamBackgroundMode(mode: String)
     fun loadStreamBadgePlacement(): String?

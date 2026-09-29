@@ -29,6 +29,7 @@ import com.nuvio.app.features.search.SearchHistoryRepository
 import com.nuvio.app.features.search.SearchRepository
 import com.nuvio.app.features.settings.ThemeSettingsRepository
 import com.nuvio.app.features.streams.StreamBadgeSettingsRepository
+import com.nuvio.app.features.streams.PinnedStreamSourcesRepository
 import com.nuvio.app.features.tracking.TrackingProviderRegistry
 import com.nuvio.app.features.tracking.TrackingSettingsRepository
 import com.nuvio.app.features.tmdb.TmdbSettingsRepository
@@ -186,6 +187,7 @@ object ProfileRepository {
         CardDepthStyleRepository.onProfileChanged()
         PlayerSettingsRepository.onProfileChanged()
         StreamBadgeSettingsRepository.onProfileChanged()
+        PinnedStreamSourcesRepository.onProfileChanged()
         P2pSettingsRepository.onProfileChanged()
         HomeCatalogSettingsRepository.onProfileChanged()
         HomeRepository.clear()
