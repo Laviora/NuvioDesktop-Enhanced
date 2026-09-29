@@ -44,6 +44,8 @@ jobs:
             --tests 'com.nuvio.app.features.details.components.DetailActionLayoutTest' \
             --tests 'com.nuvio.app.features.details.MetaScreenSettingsPayloadCodecTest' \
             --tests 'com.nuvio.app.features.details.components.DetailActionButtonsTest' \
+            --tests 'com.nuvio.app.features.details.RandomEpisodeSupportTest' \
+            --tests 'com.nuvio.app.features.details.components.DesktopDetailHeroTest' \
             --tests 'com.nuvio.app.features.details.components.DetailPosterRailSectionTest' \
             --tests 'com.nuvio.app.features.catalog.MoreLikeThisCatalogTest' \
             --tests 'com.nuvio.app.features.player.DesktopPlayerKeyboardShortcutsTest' \
