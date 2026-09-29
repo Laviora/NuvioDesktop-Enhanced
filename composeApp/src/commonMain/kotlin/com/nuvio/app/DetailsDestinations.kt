@@ -79,6 +79,7 @@ internal fun DetailsDestination(
     navController: NuvioNavigator,
     onPlay: ContentPlayAction,
     onPlayManually: ContentPlayAction,
+    onPlayFromStart: ContentPlayAction,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
@@ -94,6 +95,7 @@ internal fun DetailsDestination(
         onBack = onBack,
         onPlay = onPlay,
         onPlayManually = onPlayManually,
+        onPlayFromStart = onPlayFromStart,
         onOpenMeta = onOpenMeta,
         onOpenMoreLikeThis = { meta ->
             val source = meta.moreLikeThisSource

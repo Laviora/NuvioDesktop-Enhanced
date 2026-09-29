@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlaylistAddCheckCircle
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import com.nuvio.app.core.ui.NuvioLoadingIndicator
@@ -193,6 +194,7 @@ fun MetaDetailsScreen(
     onBack: () -> Unit,
     onPlay: ((type: String, videoId: String, parentMetaId: String, parentMetaType: String, title: String, logo: String?, poster: String?, background: String?, seasonNumber: Int?, episodeNumber: Int?, episodeTitle: String?, episodeThumbnail: String?, pauseDescription: String?, resumePositionMs: Long?) -> Unit)? = null,
     onPlayManually: ((type: String, videoId: String, parentMetaId: String, parentMetaType: String, title: String, logo: String?, poster: String?, background: String?, seasonNumber: Int?, episodeNumber: Int?, episodeTitle: String?, episodeThumbnail: String?, pauseDescription: String?, resumePositionMs: Long?) -> Unit)? = null,
+    onPlayFromStart: ((type: String, videoId: String, parentMetaId: String, parentMetaType: String, title: String, logo: String?, poster: String?, background: String?, seasonNumber: Int?, episodeNumber: Int?, episodeTitle: String?, episodeThumbnail: String?, pauseDescription: String?, resumePositionMs: Long?) -> Unit)? = null,
     onOpenMeta: ((MetaPreview) -> Unit)? = null,
     onOpenMoreLikeThis: ((MetaDetails) -> Unit)? = null,
     onCastClick: ((MetaPerson, String?) -> Unit)? = null,
@@ -784,10 +786,14 @@ fun MetaDetailsScreen(
                         else -> playText
                     }
                 }
-                val onPrimaryPlayClick: () -> Unit = {
+                fun runPlayAction(
+                    handler: ((type: String, videoId: String, parentMetaId: String, parentMetaType: String, title: String, logo: String?, poster: String?, background: String?, seasonNumber: Int?, episodeNumber: Int?, episodeTitle: String?, episodeThumbnail: String?, pauseDescription: String?, resumePositionMs: Long?) -> Unit)?,
+                    resumePositionMs: Long?,
+                ) {
+                    handler ?: return
                     when {
                         (meta.type == "series" || hasEpisodes) && seriesAction != null -> {
-                            onPlay?.invoke(
+                            handler(
                                 meta.type,
                                 seriesStreamVideoId ?: seriesAction.videoId,
                                 meta.id,
@@ -801,12 +807,12 @@ fun MetaDetailsScreen(
                                 seriesAction.episodeTitle,
                                 seriesAction.episodeThumbnail,
                                 seriesPauseDescription,
-                                seriesAction.resumePositionMs,
+                                resumePositionMs,
                             )
                         }
 
                         else -> {
-                            onPlay?.invoke(
+                            handler(
                                 meta.type,
                                 meta.id,
                                 meta.id,
@@ -820,11 +826,22 @@ fun MetaDetailsScreen(
                                 null,
                                 null,
                                 meta.description,
-                                movieProgress?.lastPositionMs,
+                                resumePositionMs,
                             )
                         }
                     }
                 }
+                val activeResumePositionMs = if ((meta.type == "series" || hasEpisodes) && seriesAction != null) {
+                    seriesAction.resumePositionMs
+                } else {
+                    movieProgress?.lastPositionMs
+                }
+                val onPrimaryPlayClick: () -> Unit = {
+                    runPlayAction(onPlay, activeResumePositionMs)
+                }
+                val onPlayFromStartClick: (() -> Unit)? = onPlayFromStart
+                    ?.takeIf { (activeResumePositionMs ?: 0L) > 0L }
+                    ?.let { handler -> { runPlayAction(handler, 0L) } }
                 val manualPlayHandler = onPlayManually
                 val showManualPlayOption = manualPlayHandler != null && StreamAutoPlayPolicy.isEffectivelyEnabled(playerSettingsUiState)
                 val onPrimaryPlayLongClick: (() -> Unit)? = manualPlayHandler
@@ -1200,6 +1217,7 @@ fun MetaDetailsScreen(
                                         showOverallRatings = metaScreenSettingsUiState.showOverallRatings,
                                         isMdbListActive = mdbListSettings.isActive,
                                         playButtonLabel = playButtonLabel,
+                                        iconActionRow = metaScreenSettingsUiState.iconActionRow,
                                         isSaved = isSaved,
                                         isWatched = isWatched,
                                         onHeightChanged = { heroHeightPx.intValue = it },
@@ -1210,6 +1228,7 @@ fun MetaDetailsScreen(
                                             HeroTrailerAudioState.toggleMuted()
                                         },
                                         onPlayClick = onPrimaryPlayClick,
+                                        onPlayFromStartClick = onPlayFromStartClick,
                                         onPlayLongClick = if (showManualPlayOption) onPrimaryPlayLongClick else null,
                                         onWatchedClick = toggleWatched,
                                         onSaveClick = toggleSaved,
@@ -1231,6 +1250,7 @@ fun MetaDetailsScreen(
                                     isSaved = isSaved,
                                     isWatched = isWatched,
                                     onPrimaryPlayClick = onPrimaryPlayClick,
+                                    onPlayFromStartClick = onPlayFromStartClick,
                                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                                     onSaveClick = toggleSaved,
                                     onSaveLongClick = openLibraryListPicker,
@@ -1358,6 +1378,7 @@ fun MetaDetailsScreen(
                                     isSaved = isSaved,
                                     isWatched = isWatched,
                                     onPrimaryPlayClick = onPrimaryPlayClick,
+                                    onPlayFromStartClick = onPlayFromStartClick,
                                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                                     onSaveClick = toggleSaved,
                                     onSaveLongClick = openLibraryListPicker,
@@ -2051,6 +2072,7 @@ private fun LazyListScope.configuredMetaSectionItems(
     isSaved: Boolean,
     isWatched: Boolean,
     onPrimaryPlayClick: () -> Unit,
+    onPlayFromStartClick: (() -> Unit)?,
     onPrimaryPlayLongClick: (() -> Unit)?,
     onSaveClick: () -> Unit,
     onSaveLongClick: (() -> Unit)?,
@@ -2134,6 +2156,7 @@ private fun LazyListScope.configuredMetaSectionItems(
                     isSaved = isSaved,
                     isWatched = isWatched,
                     onPrimaryPlayClick = onPrimaryPlayClick,
+                    onPlayFromStartClick = onPlayFromStartClick,
                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                     onSaveClick = onSaveClick,
                     onSaveLongClick = onSaveLongClick,
@@ -2361,6 +2384,7 @@ private fun ConfiguredMetaSections(
     isSaved: Boolean,
     isWatched: Boolean,
     onPrimaryPlayClick: () -> Unit,
+    onPlayFromStartClick: (() -> Unit)?,
     onPrimaryPlayLongClick: (() -> Unit)?,
     onSaveClick: () -> Unit,
     onSaveLongClick: (() -> Unit)?,
@@ -2422,8 +2446,40 @@ private fun ConfiguredMetaSections(
     fun RenderSection(key: MetaScreenSectionKey, showHeader: Boolean = true) {
         when (key) {
             MetaScreenSectionKey.ACTIONS -> {
+                val iconActions = buildList {
+                    onPlayFromStartClick?.let { playFromStart ->
+                        add(DetailSecondaryAction(
+                            label = stringResource(Res.string.details_action_start_from_beginning),
+                            icon = Icons.Rounded.Replay,
+                            onClick = playFromStart,
+                        ))
+                    }
+                    add(DetailSecondaryAction(
+                        label = if (isWatched) {
+                            stringResource(Res.string.hero_mark_unwatched)
+                        } else {
+                            stringResource(Res.string.hero_mark_watched)
+                        },
+                        icon = if (isWatched) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
+                        isActive = isWatched,
+                        onClick = onWatchedClick,
+                    ))
+                    add(DetailSecondaryAction(
+                        label = if (isSaved) {
+                            stringResource(Res.string.hero_remove_from_library)
+                        } else {
+                            stringResource(Res.string.hero_add_to_library)
+                        },
+                        icon = if (isSaved) Icons.Default.Check else Icons.Default.Add,
+                        isActive = isSaved,
+                        onClick = onSaveClick,
+                        onLongClick = onSaveLongClick,
+                    ))
+                }
                 DetailActionButtons(
                     playLabel = playButtonLabel,
+                    iconActionRow = settings.iconActionRow,
+                    iconActions = iconActions,
                     secondaryActions = buildList {
                         add(DetailSecondaryAction(
                             label = if (isWatched) {

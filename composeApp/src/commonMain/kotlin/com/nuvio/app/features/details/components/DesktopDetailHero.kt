@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -73,6 +74,7 @@ import com.nuvio.app.features.details.formatRuntimeForDisplay
 import com.nuvio.app.features.tmdb.originalTmdbImageUrl
 import nuvio.composeapp.generated.resources.Res
 import nuvio.composeapp.generated.resources.detail_logo_content_description
+import nuvio.composeapp.generated.resources.details_action_start_from_beginning
 import nuvio.composeapp.generated.resources.hero_add_to_library
 import nuvio.composeapp.generated.resources.hero_mark_unwatched
 import nuvio.composeapp.generated.resources.hero_mark_watched
@@ -197,6 +199,7 @@ fun DesktopDetailHero(
     showOverallRatings: Boolean,
     isMdbListActive: Boolean,
     playButtonLabel: String,
+    iconActionRow: Boolean,
     isSaved: Boolean,
     isWatched: Boolean,
     onHeightChanged: (Int) -> Unit,
@@ -205,6 +208,7 @@ fun DesktopDetailHero(
     heroTrailerMuted: Boolean,
     onHeroTrailerMuteToggle: () -> Unit,
     onPlayClick: () -> Unit,
+    onPlayFromStartClick: (() -> Unit)?,
     onPlayLongClick: (() -> Unit)?,
     onWatchedClick: () -> Unit,
     onSaveClick: () -> Unit,
@@ -305,6 +309,37 @@ fun DesktopDetailHero(
             DetailActionButtons(
                 modifier = Modifier.widthIn(max = 520.dp),
                 playLabel = playButtonLabel,
+                iconActionRow = iconActionRow,
+                iconActions = buildList {
+                    onPlayFromStartClick?.let { playFromStart ->
+                        add(DetailSecondaryAction(
+                            label = stringResource(Res.string.details_action_start_from_beginning),
+                            icon = Icons.Rounded.Replay,
+                            onClick = playFromStart,
+                        ))
+                    }
+                    add(DetailSecondaryAction(
+                        label = if (isWatched) {
+                            stringResource(Res.string.hero_mark_unwatched)
+                        } else {
+                            stringResource(Res.string.hero_mark_watched)
+                        },
+                        icon = if (isWatched) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
+                        isActive = isWatched,
+                        onClick = onWatchedClick,
+                    ))
+                    add(DetailSecondaryAction(
+                        label = if (isSaved) {
+                            stringResource(Res.string.hero_remove_from_library)
+                        } else {
+                            stringResource(Res.string.hero_add_to_library)
+                        },
+                        icon = if (isSaved) Icons.Default.Check else Icons.Default.Add,
+                        isActive = isSaved,
+                        onClick = onSaveClick,
+                        onLongClick = onSaveLongClick,
+                    ))
+                },
                 secondaryActions = listOf(
                     DetailSecondaryAction(
                         label = if (isWatched) {

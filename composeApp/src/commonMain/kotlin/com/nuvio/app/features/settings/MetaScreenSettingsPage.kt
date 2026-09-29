@@ -76,6 +76,8 @@ import nuvio.composeapp.generated.resources.settings_meta_comments_description
 import nuvio.composeapp.generated.resources.settings_meta_details
 import nuvio.composeapp.generated.resources.settings_meta_details_description
 import nuvio.composeapp.generated.resources.settings_meta_hero_trailer_playback
+import nuvio.composeapp.generated.resources.settings_meta_icon_action_row
+import nuvio.composeapp.generated.resources.settings_meta_icon_action_row_description
 import nuvio.composeapp.generated.resources.settings_meta_hero_trailer_playback_description
 import nuvio.composeapp.generated.resources.settings_meta_episode_cards
 import nuvio.composeapp.generated.resources.settings_meta_episode_cards_description
@@ -145,6 +147,14 @@ internal fun LazyListScope.metaScreenSettingsContent(
                         onCheckedChange = MetaScreenSettingsRepository::setPosterTransitionEnabled,
                     )
                 }
+                SettingsGroupDivider(isTablet = isTablet)
+                SettingsSwitchRow(
+                    title = stringResource(Res.string.settings_meta_icon_action_row),
+                    description = stringResource(Res.string.settings_meta_icon_action_row_description),
+                    checked = uiState.iconActionRow,
+                    isTablet = isTablet,
+                    onCheckedChange = MetaScreenSettingsRepository::setIconActionRow,
+                )
                 if (showHeroTrailerPlaybackSetting) {
                     SettingsGroupDivider(isTablet = isTablet)
                     SettingsSwitchRow(
