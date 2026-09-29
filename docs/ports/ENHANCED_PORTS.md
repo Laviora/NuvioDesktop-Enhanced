@@ -24,6 +24,7 @@ attribution retained in this ledger and in the relevant Git commits.
 | More Like This: View All | [`913fe7b`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/913fe7b50baa1ac2aa273c647d9e5b9a8f36b9dc) | Existing desktop catalog grid with TMDB/Trakt pagination and source-aware navigation; non-paginated SIMKL recommendations remain rail-only | Catalog page/visibility policy, TMDB and Trakt pagination, and desktop Compose action tests | macOS arm64/x86_64 and Windows x64 CI pass |
 | Detail-page icon action row | [`fc09cb1`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/fc09cb18e6af8c63aae1d4b7122727d24dce1df9), [`40faf88`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/40faf88abca3e556f4e7258bcca1658cd29c1120) | Default-on full-width Play/Resume button with a responsive icon row for Start from beginning, Watched, and Library; disabling the setting restores the upstream overflow layout. Unsupported or separately unported actions remain hidden. | Layout fitting, backward-compatible settings codec, and desktop Compose interaction tests | macOS arm64/x86_64 and Windows x64 CI pass |
 | Random episode selection | [`295c45c`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/295c45c5e45d467df59270c29c7a8ad7f1c45aa7) | Series-only Shuffle action in both icon-row and overflow layouts; selects from released playable episodes and reuses desktop episode playback | Eligibility/release filtering, deterministic selection, and desktop Compose interaction tests | macOS arm64/x86_64 and Windows x64 CI pass |
+| Episode ratings | [`9a70b82`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/9a70b821), [`94e7b4c`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/94e7b4cdfc3491ecc3b0b194088990c5b4295a72) | Preserves IMDb, TMDB, and unknown add-on ratings as distinct sources; shows IMDb and TMDB badges together in horizontal and list layouts, uses a neutral fallback for unknown sources, and adds a profile-scoped TMDB episode-ratings toggle | TMDB enrichment/source preservation, rating-label precedence, neutral fallback, and visibility policy | macOS arm64/x86_64 and Windows x64 CI pass |
 
 ## Planned inventory
 
@@ -31,7 +32,6 @@ attribution retained in this ledger and in the relevant Git commits.
 
 - Hero card styles, dynamic backgrounds, accent treatments, and trailer preferences
 - Custom profile backgrounds
-- Episode ratings
 - Pinned stream sources
 - Trakt and SIMKL device-code sign-in
 
@@ -68,6 +68,8 @@ More Like This: View All verification passed in [Desktop Enhanced CI run 3645010
 Detail-page icon action row verification passed in [Desktop Enhanced CI run 36557269898](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36557269898): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 Random episode selection verification passed in [Desktop Enhanced CI run 36562760351](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36562760351): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
+
+Episode ratings verification passed in [Desktop Enhanced CI run 36601561277](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36601561277): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 The CI test job compiles the complete desktop source and runs Enhanced-specific regression tests.
 The unfiltered upstream desktop suite is not used as a required check because 27 unrelated tests
