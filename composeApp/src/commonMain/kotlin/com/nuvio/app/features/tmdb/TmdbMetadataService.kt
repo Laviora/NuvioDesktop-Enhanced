@@ -696,7 +696,7 @@ object TmdbMetadataService {
             ?: return meta
 
         val needsEpisodes = (
-            settings.useEpisodes || settings.useSeasonPosters
+            settings.useEpisodes || settings.useEpisodeRatings || settings.useSeasonPosters
         ) && tmdbType == "tv"
         val (enrichment, episodeMap) = coroutineScope {
             val enrichmentDeferred = async {
@@ -886,6 +886,11 @@ object TmdbMetadataService {
                                 enrichmentForEpisode.runtimeMinutes ?: video.runtime
                             } else {
                                 video.runtime
+                            },
+                            tmdbRating = if (settings.useEpisodeRatings) {
+                                enrichmentForEpisode.voteAverage?.takeIf { it > 0.0 } ?: video.tmdbRating
+                            } else {
+                                video.tmdbRating
                             },
                         )
                     }
@@ -1168,6 +1173,7 @@ object TmdbMetadataService {
                                 seasonPoster = buildImageUrl(details.posterPath, "w500"),
                                 airDate = episode.airDate?.trim()?.takeIf(String::isNotBlank),
                                 runtimeMinutes = episode.runtime,
+                                voteAverage = episode.voteAverage?.takeIf { it > 0.0 },
                             )
                         }
                         .toMap()
@@ -1495,6 +1501,7 @@ internal data class TmdbEpisodeEnrichment(
     val seasonPoster: String? = null,
     val airDate: String?,
     val runtimeMinutes: Int?,
+    val voteAverage: Double? = null,
 )
 
 private fun normalizeMetaType(type: String): String =
@@ -2121,6 +2128,7 @@ private data class TmdbEpisodeResponse(
     @SerialName("still_path") val stillPath: String? = null,
     @SerialName("air_date") val airDate: String? = null,
     val runtime: Int? = null,
+    @SerialName("vote_average") val voteAverage: Double? = null,
     @SerialName("episode_number") val episodeNumber: Int? = null,
 )
 

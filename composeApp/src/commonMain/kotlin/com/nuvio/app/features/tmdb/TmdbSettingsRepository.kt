@@ -24,6 +24,7 @@ object TmdbSettingsRepository {
     private var useProductions = true
     private var useNetworks = true
     private var useEpisodes = true
+    private var useEpisodeRatings = true
     private var useSeasonPosters = true
     private var useMoreLikeThis = true
     private var useCollections = true
@@ -127,6 +128,15 @@ object TmdbSettingsRepository {
         persist = TmdbSettingsStorage::saveUseEpisodes,
     )
 
+    fun setUseEpisodeRatings(value: Boolean) {
+        ensureLoaded()
+        if (useEpisodeRatings == value) return
+        useEpisodeRatings = value
+        publish()
+        TmdbSettingsStorage.saveUseEpisodeRatings(value)
+        MetaDetailsRepository.clear()
+    }
+
     fun setUseSeasonPosters(value: Boolean) = setBoolean(
         current = useSeasonPosters,
         next = value,
@@ -177,6 +187,7 @@ object TmdbSettingsRepository {
         useProductions = TmdbSettingsStorage.loadUseProductions() ?: true
         useNetworks = TmdbSettingsStorage.loadUseNetworks() ?: true
         useEpisodes = TmdbSettingsStorage.loadUseEpisodes() ?: true
+        useEpisodeRatings = TmdbSettingsStorage.loadUseEpisodeRatings() ?: true
         useSeasonPosters = TmdbSettingsStorage.loadUseSeasonPosters() ?: true
         useMoreLikeThis = TmdbSettingsStorage.loadUseMoreLikeThis() ?: true
         useCollections = TmdbSettingsStorage.loadUseCollections() ?: true
@@ -199,6 +210,7 @@ object TmdbSettingsRepository {
             useProductions = useProductions,
             useNetworks = useNetworks,
             useEpisodes = useEpisodes,
+            useEpisodeRatings = useEpisodeRatings,
             useSeasonPosters = useSeasonPosters,
             useMoreLikeThis = useMoreLikeThis,
             useCollections = useCollections,

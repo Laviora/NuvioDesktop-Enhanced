@@ -168,6 +168,84 @@ class TmdbMetadataServiceTest {
     }
 
     @Test
+    fun `applyEnrichment keeps TMDB and IMDb episode ratings separate`() {
+        val base = MetaDetails(
+            id = "tt1234567",
+            type = "series",
+            name = "Original",
+            videos = listOf(
+                MetaVideo(
+                    id = "ep1",
+                    title = "Episode 1",
+                    season = 1,
+                    episode = 1,
+                    imdbRating = 9.1,
+                    rating = 7.2,
+                ),
+            ),
+        )
+        val episodes = mapOf(
+            (1 to 1) to TmdbEpisodeEnrichment(
+                title = null,
+                overview = null,
+                thumbnail = null,
+                airDate = null,
+                runtimeMinutes = null,
+                voteAverage = 8.7,
+            ),
+        )
+
+        val result = TmdbMetadataService.applyEnrichment(
+            meta = base,
+            enrichment = null,
+            episodeMap = episodes,
+            settings = TmdbSettings(enabled = true, useEpisodeRatings = true),
+        )
+
+        val episode = result.videos.single()
+        assertEquals(8.7, episode.tmdbRating)
+        assertEquals(9.1, episode.imdbRating)
+        assertEquals(7.2, episode.rating)
+    }
+
+    @Test
+    fun `applyEnrichment leaves TMDB episode rating unchanged when module is disabled`() {
+        val base = MetaDetails(
+            id = "tt1234567",
+            type = "series",
+            name = "Original",
+            videos = listOf(
+                MetaVideo(
+                    id = "ep1",
+                    title = "Episode 1",
+                    season = 1,
+                    episode = 1,
+                    tmdbRating = 6.5,
+                ),
+            ),
+        )
+        val episodes = mapOf(
+            (1 to 1) to TmdbEpisodeEnrichment(
+                title = null,
+                overview = null,
+                thumbnail = null,
+                airDate = null,
+                runtimeMinutes = null,
+                voteAverage = 8.7,
+            ),
+        )
+
+        val result = TmdbMetadataService.applyEnrichment(
+            meta = base,
+            enrichment = null,
+            episodeMap = episodes,
+            settings = TmdbSettings(enabled = true, useEpisodeRatings = false),
+        )
+
+        assertEquals(6.5, result.videos.single().tmdbRating)
+    }
+
+    @Test
     fun `applyEnrichment does not replace episode release dates from TMDB`() {
         val addonRelease = "2023-12-31T19:00:00Z"
         val base = MetaDetails(
