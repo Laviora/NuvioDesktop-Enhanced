@@ -25,6 +25,7 @@ attribution retained in this ledger and in the relevant Git commits.
 | Detail-page icon action row | [`fc09cb1`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/fc09cb18e6af8c63aae1d4b7122727d24dce1df9), [`40faf88`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/40faf88abca3e556f4e7258bcca1658cd29c1120) | Default-on full-width Play/Resume button with a responsive icon row for Start from beginning, Watched, and Library; disabling the setting restores the upstream overflow layout. Unsupported or separately unported actions remain hidden. | Layout fitting, backward-compatible settings codec, and desktop Compose interaction tests | macOS arm64/x86_64 and Windows x64 CI pass |
 | Random episode selection | [`295c45c`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/295c45c5e45d467df59270c29c7a8ad7f1c45aa7) | Series-only Shuffle action in both icon-row and overflow layouts; selects from released playable episodes and reuses desktop episode playback | Eligibility/release filtering, deterministic selection, and desktop Compose interaction tests | macOS arm64/x86_64 and Windows x64 CI pass |
 | Episode ratings | [`9a70b82`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/9a70b821), [`94e7b4c`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/94e7b4cdfc3491ecc3b0b194088990c5b4295a72) | Preserves IMDb, TMDB, and unknown add-on ratings as distinct sources; shows IMDb and TMDB badges together in horizontal and list layouts, uses a neutral fallback for unknown sources, and adds a profile-scoped TMDB episode-ratings toggle | TMDB enrichment/source preservation, rating-label precedence, neutral fallback, and visibility policy | macOS arm64/x86_64 and Windows x64 CI pass |
+| Pinned stream sources | [`d5ed226`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/d5ed2261e1e9c924c30aaad9c19283e76e2fc512), [`db90446`](https://github.com/luqmanfadlli/NuvioMobile-Enhanced/commit/db904462) | Provider-level pinning with ordered, profile-scoped persistence; Desktop right-click and long-press actions; pinned-header indicators; search/filter compatibility; and unchanged direct-debrid/autoplay priority | Provider extraction, pin ordering and identity, loading placeholders, direct-debrid exclusion, search compatibility, and Desktop context-menu regression coverage | macOS arm64/x86_64 and Windows x64 CI pass |
 
 ## Planned inventory
 
@@ -32,7 +33,6 @@ attribution retained in this ledger and in the relevant Git commits.
 
 - Hero card styles, dynamic backgrounds, accent treatments, and trailer preferences
 - Custom profile backgrounds
-- Pinned stream sources
 - Trakt and SIMKL device-code sign-in
 
 ### Phase 3 — native player or larger features
@@ -70,6 +70,8 @@ Detail-page icon action row verification passed in [Desktop Enhanced CI run 3655
 Random episode selection verification passed in [Desktop Enhanced CI run 36562760351](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36562760351): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 Episode ratings verification passed in [Desktop Enhanced CI run 36601561277](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36601561277): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
+
+Pinned stream sources verification passed in [Desktop Enhanced CI run 36607943302](https://github.com/Laviora/NuvioDesktop-Enhanced/actions/runs/36607943302): the Enhanced regression suite, macOS arm64 and x86_64 DMGs, and the Windows x64 MSI all succeeded.
 
 The CI test job compiles the complete desktop source and runs Enhanced-specific regression tests.
 The unfiltered upstream desktop suite is not used as a required check because 27 unrelated tests
