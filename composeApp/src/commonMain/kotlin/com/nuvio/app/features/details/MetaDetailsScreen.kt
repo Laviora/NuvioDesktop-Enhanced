@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.DoneAll
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlaylistAddCheckCircle
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -923,6 +924,14 @@ fun MetaDetailsScreen(
                         savedProgress?.lastPositionMs,
                     )
                 }
+                val onRandomEpisodeClick: (() -> Unit)? = if (meta.supportsRandomEpisodeAction()) {
+                    {
+                        meta.randomReleasedPlayableEpisode(todayIsoDate)
+                            ?.let(onEpisodePlayClick)
+                    }
+                } else {
+                    null
+                }
                 val onEpisodeManualPlayClick: (MetaVideo) -> Unit = { video ->
                     val season = video.season
                     val episode = video.episode
@@ -1229,6 +1238,7 @@ fun MetaDetailsScreen(
                                         },
                                         onPlayClick = onPrimaryPlayClick,
                                         onPlayFromStartClick = onPlayFromStartClick,
+                                        onRandomEpisodeClick = onRandomEpisodeClick,
                                         onPlayLongClick = if (showManualPlayOption) onPrimaryPlayLongClick else null,
                                         onWatchedClick = toggleWatched,
                                         onSaveClick = toggleSaved,
@@ -1251,6 +1261,7 @@ fun MetaDetailsScreen(
                                     isWatched = isWatched,
                                     onPrimaryPlayClick = onPrimaryPlayClick,
                                     onPlayFromStartClick = onPlayFromStartClick,
+                                    onRandomEpisodeClick = onRandomEpisodeClick,
                                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                                     onSaveClick = toggleSaved,
                                     onSaveLongClick = openLibraryListPicker,
@@ -1379,6 +1390,7 @@ fun MetaDetailsScreen(
                                     isWatched = isWatched,
                                     onPrimaryPlayClick = onPrimaryPlayClick,
                                     onPlayFromStartClick = onPlayFromStartClick,
+                                    onRandomEpisodeClick = onRandomEpisodeClick,
                                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                                     onSaveClick = toggleSaved,
                                     onSaveLongClick = openLibraryListPicker,
@@ -2073,6 +2085,7 @@ private fun LazyListScope.configuredMetaSectionItems(
     isWatched: Boolean,
     onPrimaryPlayClick: () -> Unit,
     onPlayFromStartClick: (() -> Unit)?,
+    onRandomEpisodeClick: (() -> Unit)?,
     onPrimaryPlayLongClick: (() -> Unit)?,
     onSaveClick: () -> Unit,
     onSaveLongClick: (() -> Unit)?,
@@ -2157,6 +2170,7 @@ private fun LazyListScope.configuredMetaSectionItems(
                     isWatched = isWatched,
                     onPrimaryPlayClick = onPrimaryPlayClick,
                     onPlayFromStartClick = onPlayFromStartClick,
+                    onRandomEpisodeClick = onRandomEpisodeClick,
                     onPrimaryPlayLongClick = onPrimaryPlayLongClick,
                     onSaveClick = onSaveClick,
                     onSaveLongClick = onSaveLongClick,
@@ -2385,6 +2399,7 @@ private fun ConfiguredMetaSections(
     isWatched: Boolean,
     onPrimaryPlayClick: () -> Unit,
     onPlayFromStartClick: (() -> Unit)?,
+    onRandomEpisodeClick: (() -> Unit)?,
     onPrimaryPlayLongClick: (() -> Unit)?,
     onSaveClick: () -> Unit,
     onSaveLongClick: (() -> Unit)?,
@@ -2464,6 +2479,13 @@ private fun ConfiguredMetaSections(
                         isActive = isWatched,
                         onClick = onWatchedClick,
                     ))
+                    onRandomEpisodeClick?.let { playRandomEpisode ->
+                        add(DetailSecondaryAction(
+                            label = stringResource(Res.string.detail_play_random_episode),
+                            icon = Icons.Default.Shuffle,
+                            onClick = playRandomEpisode,
+                        ))
+                    }
                     add(DetailSecondaryAction(
                         label = if (isSaved) {
                             stringResource(Res.string.hero_remove_from_library)
@@ -2495,6 +2517,13 @@ private fun ConfiguredMetaSections(
                             isActive = isWatched,
                             onClick = onWatchedClick,
                         ))
+                        onRandomEpisodeClick?.let { playRandomEpisode ->
+                            add(DetailSecondaryAction(
+                                label = stringResource(Res.string.detail_play_random_episode),
+                                icon = Icons.Default.Shuffle,
+                                onClick = playRandomEpisode,
+                            ))
+                        }
                         add(DetailSecondaryAction(
                             label = if (isSaved) {
                                 stringResource(Res.string.hero_remove_from_library)
